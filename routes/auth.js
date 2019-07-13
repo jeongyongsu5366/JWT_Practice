@@ -1,36 +1,16 @@
 const router = require('express').Router();
 const User = require('../model/User');
-
-// Validation with JOi
-const Joi = require('@hapi/joi');
-
-// This schema is going to be used for validation
-const schema = {
-	name: Joi.string()
-		.min(6)
-		.required(),
-	email: Joi.string()
-		.min(6)
-		.required()
-		.email(),
-	password: Joi.string()
-		.min(6)
-		.required()
-};
-
+const { registerValidation } = require('../validation');
 // /api/user/register
 router.post('/register', async (req, res) => {
-	// Let's Validate The Data before we add user
-	// It will return an object
-
-	// const validation = Joi.validate(req.body, schema);
-	// res.send(validation)
-
-	// As we only want to get error message we can destructure it
-	const { error } = Joi.validate(req.body, schema);
-	// res.send(error.details[0].message);
+	const { error } = registerValidation(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
+	// Checking if the user is already in the database
+	const emailExist = await User.findOne({ email: req.body.email });
+	if (emailExist) return res.status(400).send('Email already exists');
+
+	// Create a new User
 	const user = new User({
 		name: req.body.name,
 		email: req.body.email,
