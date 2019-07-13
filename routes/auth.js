@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../model/User');
 
 // When we go to register
+// Validation with JOi
 // /api/user/register
 router.post('/register', async (req, res) => {
 	const user = new User({
