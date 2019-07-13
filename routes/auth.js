@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../model/User');
+const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation');
 const bcrypt = require('bcryptjs');
 // /api/user/register
@@ -48,26 +49,16 @@ router.post('/login', async (req, res) => {
 
 	if (!validPass) return res.status(400).send('Invalid Password');
 
-	res.send('Logged in!');
+	// RIght After validating Password, we're going to res.send jwt
+	// res.send('Logged in!');
+
+	// {_id: user._id}, and secret id in .env
+	// only our backend server know about TOKEN_SECRET
+	const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+	res.header('auth-token', token).send(token);
 });
 
 module.exports = router;
-
-// {
-// 	"name" : "Heather",
-// 	"email": "jojos55151@gmail.com",
-// 	"password": "oo101010"
-// }
-
-// We can find the hased password
-// {
-// 	"_id": "5d2a36cc73bf665dc86e031c",
-// 	"name": "Heather",
-// 	"email": "jojos55151@gmail.com",
-// 	"password": "$2a$10$Vt/jvviQ2vOir4uuwEwhN.ciVN2D.ZJafXz/oxnbYSaT5k6nhvXc6",
-// 	"date": "2019-07-13T19:53:48.941Z",
-// 	"__v": 0
-// }
 
 // -------------------------------
 // Test Case
@@ -76,4 +67,6 @@ module.exports = router;
 // 	"password": "oo101010"
 // }
 
-// Logged in!
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDJhMzc2MTVlNmIwYzc1MDAyMWRkNjEiLCJpYXQiOjE1NjMwNDg3ODN9.aukShIFQEBUv46aYCwai3a19BkzYWhqwoS27UprvP6I
+
+// go to jwt and check it out
