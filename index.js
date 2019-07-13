@@ -3,6 +3,8 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
+const postRoute = require('./routes/posts');
+
 dotenv.config();
 
 // Connect to DB
@@ -16,5 +18,6 @@ const authRoute = require('./routes/auth');
 
 // Route Middleware
 app.use('/api/user', authRoute);
+app.use('/api/posts', postRoute);
 
 app.listen(3000, () => console.log('Server Up and Running!'));
