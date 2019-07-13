@@ -3,6 +3,11 @@ const User = require('../model/User');
 
 // When we go to register
 // /api/user/register
+// {
+// 	"name" : "SU JEONG",
+// 	"email": "akh5366@gmail.com",
+// 	"password": "123456"
+// }
 router.post('/register', async (req, res) => {
 	const user = new User({
 		name: req.body.name,
